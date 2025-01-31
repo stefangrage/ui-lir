@@ -41,7 +41,6 @@ import lomo from "../assets/images/lomo.jpeg";
             <li><Link href="#stickyscroll" alt="">Stickyscroll med infobokse</Link></li>
 			<li><Link href="#horisontalscroll" alt="">Horisontal scroll</Link></li>
 			<li><Link href="#mangesektioner" alt="">Sektion med mange elementer der animerer ind</Link></li>
-			<li><Link href="#videoscrubber" alt="">Videoscrubber</Link></li>
 			<li><Link href="#progressbar" alt="">Progress-bar</Link></li>
 		</div>
 	</ul>
@@ -173,22 +172,18 @@ import lomo from "../assets/images/lomo.jpeg";
 	<h2 class="text-6xl font-extrabold font-black">Custom Cursor</h2>
 	<p>Det er nemt og sjovt at tilføje sine egne cursors.</p>
 	<h3 class="">Lav grafikken</h3>
-	<p>Først og fremmest gælder det om at få fat på en (lille) grafik-fil (max. 128 x 128 pixels). Se sektionen "usage notes" på <Link href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#usage_notes" target="_blank">https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#usage_notes</Link> vedr. filstørrelser og typer, FOR DET MED AT LAVE GRAFIKFILERNE KAN DRILLE EN DEL!</p>
+	<p>Først og fremmest gælder det om at få fat på en (lille) grafik-fil (max. 128 x 128 pixels). Se sektionen "usage notes" på <Link href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#usage_notes" target="_blank">https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#usage_notes</Link> vedr. filstørrelser og typer, for det med at lave grafikfilerne kan drille en del!</p>
 	<p>Så: lav/design en lille cursor-fil, og placer den i “public” mappen i dit Astro website.</p>
 	<h3 class="">Implementer i Tailwind</h3>
 	<p>Jvf. <Link href="https://tailwindcss.com/docs/cursor#using-custom-values" target="_blank">https://tailwindcss.com/docs/cursor#using-custom-values</Link> kan cursors tilpasses i tailwind.</p>
-	<p>Det kan gøres i tailwind.config.js filen, hvor man kan "extende" tailwind med diverse nye regler – se mit eksemplet nedenfor, der tilføjer en ny cursor-class til Tailwind.</p>
+	<p>Det kan gøres i tailwind.css filen, hvor man kan tilføje diverse nye CSS-regler til tailwind – se mit eksemplet nedenfor, der først tilføjer en ny CSS cursor-variabel til Tailwind.</p>
 	<Code code={`
-	theme: {
-		extend: {
-            cursor: {
-            'handcursor': 'url(/cursor.svg) 25 25, pointer',
-        	}
-        },
-	},
+	@theme {
+    /*custom cursor*/
+    --handcursor: url(/cursor.svg) 25 25, pointer;
+	}
 	`} lang="js">
 	</Code>
-	<p>Sørg for at følge samme syntaks, så der står "theme, extend, cursor..." og tuborg-klammer i samme rækkefølge. Det fortæller tailwind at du vil konfigurere din cursor, så du senere kan bruge den.</p>
 	<p>Giv din cursor et navn (I eksemplet er cursoren navngivet 'handcursor').</p>
 	<p>Lav den css der skal til: en url() med stien til dit cursor-billede og afslut med “, pointer” (det er et obligatorisk fallback). I mit eksempel står der også 25 25, som er et par værdier, der justerer placeringen af din cursor. Se <Link href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#syntax" target="_blank">https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#syntax</Link> for yderligere info.</p>
 	<p>Brug din nye cursor ved at tilføje classerne "cursor cursor-(--handcursor)" til de html-elementer, der skal have din custom cursor på hover, jvf. eksemplet nedenfor, der tilføjer cursoren til Link komponenten.</p>
@@ -201,14 +196,14 @@ import lomo from "../assets/images/lomo.jpeg";
 	`} lang="astro">
 	</Code>
 	<h3 class="">Custom cursor på mange elementer</h3>
-	<p>Hvis cursoren skal bruges på mange elementer, f.eks. alle links og knapper, er det nemmere at tilføje den nye cursor-class til tailwind.css filen.</p>
+	<p>Hvis cursoren skal bruges på mange elementer, f.eks. alle links og knapper, kan du også tilføje en @apply regel til tailwind.css filen.</p>
 	<p>Det kan gøres jvf. eksemplet nedenfor.</p>
 	<Code code={`
-	@layer base{
-		a, button{
-			@apply cursor-(--handcursor);
-		}
-	}		
+	@layer base {
+	a, button{
+		@apply cursor-(--handcursor);
+	}
+	}	
 	`} lang="css">
 	</Code>
 	<p>@layer base betyder at vi “bygger videre” på Tailwind, og er en konvention for det med at arbejde med Tailwind.</p>
@@ -287,8 +282,8 @@ import lomo from "../assets/images/lomo.jpeg";
 	<p>For at bruge Motion One, skal du i bunden af din side/template/komponent importere Motion One biblioteket i et script tag:</p>
 	<Code code={`
 	<script>
-	/* Import af Motion One biblioteket */
-	import { animate, stagger, inView, scroll, timeline } from "motion";
+	/* Import af Motion One bibliotek */
+	import { animate, stagger, inView, scroll } from "motion";
 	</script>
 	`} lang="js"> 
 	</Code>
@@ -337,13 +332,13 @@ import lomo from "../assets/images/lomo.jpeg";
 	/* Mere animate() */
 	animate(".mereanimate", 
 	{ opacity: [ 0.4, 1, 0, 0.8], scale: [0.95, 1, 0.7, 0.9], rotate: [0, 180, 270, 360], x: [0, 50, 0, -50 ], y:[0, 50, 0, -50 ]}, 
-	{ delay: 2, duration: 4, direction: "alternate", repeat: Infinity }
+	{ delay: 2, duration: 4, repeatType: "reverse", repeat: Infinity }
 	)
 	`} lang="js"> 
 	</Code>
 	<ul>
 		<li>Det første sæt tuborg-klammer med "opacity, scale, rotate, x og y" definerer de transforms, der udføres, og de 4 keyframes, der er i denne animation. Her kan du tilføje alle de CSS transforms, du vil.</li>
-		<li>Det andet sæt tuborg-klammer med "delay, duration, direction mm.," definerer dine parametre for animationenm, altså det der svarer til CSS Animation egenskaben. </li>
+		<li>Det andet sæt tuborg-klammer med "delay, duration, repeatType mm.," definerer dine parametre for animationenm, altså det der svarer til CSS Animation egenskaben. </li>
 		<li>Læg mærke til at jeg har tilføjet et "delay" (i sekunder) - prøv at reloade siden, hvis du ikke kan se det i første omgang. Delayet måles fra når siden er loadet. </li>
 	</ul>
 	<p>NB: Jeg har tilføjet en tailwind class til overskriften: origin-top-left. Det placerer orienteringspunktet for animationen øverst til venstre på elementet:</p>
@@ -393,7 +388,7 @@ import lomo from "../assets/images/lomo.jpeg";
 		".staggeranimation li",
 		{ opacity: [0, 1] },
 		{ 
-			delay: stagger(1, { start: 2 })
+			delay: stagger(1, { startDelay: 2 })
 		}
 		)
 	})
@@ -403,8 +398,8 @@ import lomo from "../assets/images/lomo.jpeg";
 		<li>Først vælges alle de elementer, der skal "staggeres" - jeg har valgt alle list items nede i en ul med class'en staggeranimation. Men du kan lave selectoren som du ønsker.</li>
 		<li>Dernæst definerer jeg keyframe-indstillingerne for stagger animationen</li>
 		<li>Til sidst anvender jeg keyframe animationen med et delay, som tilføjer "stagger" på alle elementer. </li>
-		<li>I kodestumpen stagger(1, &#123; start: 2 &#125; refererer 1-tallet til et delay i antal sekunder mellem hvert list item.</li>
-		<li>start: 2 refererer til hvor lang tid der skal gå, før det første list item animeres ind.</li>
+		<li>I kodestumpen stagger(1, &#123; startDelay: 2 &#125; refererer 1-tallet til et delay i antal sekunder mellem hvert list item.</li>
+		<li>startDelay: 2 refererer til hvor lang tid der skal gå, før det første list item animeres ind.</li>
 	</ul>
 	<p>I ovenstående eksempel har jeg brugt en unordered list og stagget alle list items. Men du kan sagtens bruge den på andre elementer - f.eks. billeder i en section, som nedenfor. Og du kan også lave din keyframe animation vildere:-) Og du behøver ikke nødvendigvis at pakke stagger animationen ind i inView-funktionen.</p>
 	<div class="fotosektioninview grid grid-cols-3 gap-2">
@@ -423,14 +418,14 @@ import lomo from "../assets/images/lomo.jpeg";
 	<Code code={`
 	/* Timeline animation */
 	inView( "#timelineanimationimage" , () =>{
-	const timelineanimation = [
-	[".timelineanimation", { opacity: 1 }, { duration: 5 }],
-	[".timelineanimation", { transform: "rotate(360deg)" }, { duration: 3 }],
-	[".timelineanimation", { transform: "scale(1.5)" }, { duration: 0.5 }],
-	[".timelineanimation", { transform: "scale(1)" }, { duration: 1 }],
-	[".timelineanimation", { opacity: 0.3 }, { duration: 5 }],
-	]
-	timeline( timelineanimation );
+		const timelineanimation = [
+		[".timelineanimation", { opacity: 1 }, { duration: 5 }],
+		[".timelineanimation", { transform: "rotate(360deg)" }, { duration: 3 }],
+		[".timelineanimation", { transform: "scale(1.5)" }, { duration: 0.5 }],
+		[".timelineanimation", { transform: "scale(1)" }, { duration: 1 }],
+		[".timelineanimation", { opacity: 0.3 }, { duration: 5 }],
+		]
+		animate( timelineanimation, { duration: 10, repeat: 2 } );
 	})
 	`} lang="js"> 
 	</Code>
@@ -452,24 +447,23 @@ import lomo from "../assets/images/lomo.jpeg";
 	<Image src={dobbeltexp} alt="" type="image/webp" loading="lazy" class="inviewreturn"></Image>
 	<p>Return funktionen fyres af efter den første animate()-funktionen, jvf. nedenstående eksempel:</p>
 	<Code code={`
-	/* inView & return */
-	inView( ".inviewreturn", ({ target }) => {
+	inView( ".inviewreturn", (element) => {
   	animate(
-      target,
+      element,
       { rotate: [180, 0] },
       { delay: 1, duration: 2 },
   	) 
     return () => {
       animate(
-        target,
+       element,
         { rotate: 180 }
       )
   	}
-	}) 
+	})  
 	`} lang="js"> 
 	</Code>
-	<p>Læg også mærke til: (&#123;  target &#125; ). Target betyder at callback funktionen får sendt det valgte element med - altså selectoren ".inviewreturn"</p>
-	<p>Det kan så bruges animate-funktionens selector til at sige "vælg den værdi der er i target" - altså .inviewreturn</p>
+	<p>Læg også mærke til: (&#123;  element &#125; ). Element betyder at callback funktionen får sendt det valgte element med - altså selectoren ".inviewreturn"</p>
+	<p>Det kan så bruges animate-funktionens selector til at sige "vælg den værdi der er i element" - altså .inviewreturn</p>
 	</section>
 
 	<!-- Crossfade -->
@@ -554,12 +548,12 @@ import lomo from "../assets/images/lomo.jpeg";
 	<section class="pt-1" id="parallaxmedtekstbox">
 	<h2 class="text-6xl font-extrabold font-black">Parallax med tekstboks</h2>
 	<p>Parallax-sektioner ses ofte anvendt på webdoks. Parallax-sektioner kan laves med Motion Ones scroll-funktion. Scroll-funktionen lytter på hvor langt man er scrollet ned i et givent element, og så kan man animere et andet element oven på dette for at lave parallax-effekten. Se sektionen nedenfor, hvor teksten bevæger sig hurtigere end baggrunden. </p>
-	<section class="parallaxcontainer bg-teal-100 mt-8 h-screen w-100 bg-cover bg-center" style="background-image: url('/hurtig.jpg');">
+	<section class="parallaxcontainer bg-teal-100 mt-8 h-screen w-full bg-cover bg-center" style="background-image: url('/hurtig.jpg');">
 	<p  class="parallaxelement w-3/4 mx-auto p-10 bg-slate-50 text-xl">Cupcake lollipop caramels toffee pastry. Bear claw dessert cotton candy ice cream cotton candy lemon drops jelly biscuit. Topping marzipan tart bonbon powder.</p>
 	</section>
 	<p>HTML'en består af en section med et baggrundsbillede og en paragraph med tekst. Begge stylet med Tailwind:</p>
 	<Code code={`
-	<section class="bg-teal-100 mt-8 h-screen w-100 bg-cover bg-center" style="background-image: url('/hurtig.jpg');">
+	<section class="bg-teal-100 mt-8 h-screen w-full bg-cover bg-center" style="background-image: url('/hurtig.jpg');">
 	<p class="parallaxelement w-3/4 mx-auto p-10 bg-slate-50 text-xl">Cupcake lollipop caramels toffee pastry. Bear claw dessert cotton candy ice cream cotton candy lemon drops jelly biscuit. Topping marzipan tart bonbon powder.</p>
 	</section>
 	`} lang="html">
@@ -637,38 +631,38 @@ import lomo from "../assets/images/lomo.jpeg";
 	<h2 class="text-6xl font-extrabold font-black">Sticky</h2>
 	<p>"Sticky" sektioner ses også ofte anvendt i webfeatures - indimellem kombineret med parallax. Målet er at give brugerne lidt ro til at læse tekstbidderne. Sticky-sektioner kan laves nemt bare med Tailwind. Se de tre sektioner nedenfor, som "sticyk'er" teksten fast i toppen af skærmen. </p>
 	<article class="fullwidthsection">
-		<div class="flex items-center h-screen w-100 bg-cover bg-center" style="background-image: url('/astro.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center" style="background-image: url('/astro.jpg')" >
 			<p class="w-3/4 lg:w-1/2 mx-auto p-10 bg-slate-50 text-xl sticky top-1/4">Well, the way they make shows is, they make one show. That show's called a pilot.</p>
 		</div>
-		<div class="flex items-center h-screen w-100 bg-cover bg-center" style="background-image: url('/forsker.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center" style="background-image: url('/forsker.jpg')" >
 			<p class="w-3/4 lg:w-1/2 mx-auto p-10 bg-slate-50 text-xl sticky top-1/4">Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows.</p>
 		</div>
-		<div class="flex items-center h-screen w-100 bg-cover bg-center" style="background-image: url('/penge.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center" style="background-image: url('/penge.jpg')" >
 			<p class="w-3/4 lg:w-1/2 mx-auto p-10 bg-slate-50 text-xl sticky top-1/4">Some pilots get picked and become television programs. Some don't, become nothing.</p>
 		</div>	
 	</article>
 	<p>For at lave sticky-sektioner gælder det egentlig bare om at tilføje tailwinds sticky class, og så definere hvor den skal være sticky - her top-0:</p>
 	<Code code={`
-	<div class="flex items-center h-screen w-100 bg-cover bg-center" style="background-image: url('/astro.jpg')" >
+	<div class="flex items-center h-screen w-full bg-cover bg-center" style="background-image: url('/astro.jpg')" >
 		<p class="w-3/4 lg:w-1/2 mx-auto p-10 bg-slate-50 text-xl sticky top-1/4">Well, the way they make shows is, they make one show. That show's called a pilot.</p>
 	</div>
 	`} lang="html">
 	</Code>
 	<p>En anden måde at bruge "sticky" sektioner på er at sticky'e hele sektioner, eventuelt med en lille parallaxe-effekt på: </p>
 	<article class="fullwidthsection">
-		<div class="flex items-center h-screen w-100 bg-cover bg-center sticky top-0" style="background-image: url('/astro.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center sticky top-0" style="background-image: url('/astro.jpg')" >
 			<p class="w-3/4 lg:w-1/4 ml-2 lg:ml-64 p-10 bg-slate-50 text-xl stickyparallax1">Well, the way they make shows is, they make one show. That show's called a pilot.</p>
 		</div>
-		<div class="flex items-center h-screen w-100 bg-cover bg-center sticky top-0" style="background-image: url('/forsker.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center sticky top-0" style="background-image: url('/forsker.jpg')" >
 			<p class="w-3/4 lg:w-1/4 ml-2 lg:ml-64 p-10 bg-slate-50 text-xl stickyparallax2">Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows.</p>
 		</div>
-		<div class="flex items-center h-screen w-100 bg-cover bg-center sticky top-0" style="background-image: url('/penge.jpg')" >
+		<div class="flex items-center h-screen w-full bg-cover bg-center sticky top-0" style="background-image: url('/penge.jpg')" >
 			<p class="w-3/4 lg:w-1/4 ml-2 lg:ml-64 p-10 bg-slate-50 text-xl stickyparallax3">Some pilots get picked and become television programs. Some don't, become nothing.</p>
 		</div>	
 	</article>
 	<p>Her er sticky class'en placeret på elementerne med billedbaggrunde på:</p>
 	<Code code={`
-	<div class="flex items-center h-screen w-100 bg-cover bg-center sticky top-0" style="background-image: url('/astro.jpg')" >
+	<div class="flex items-center h-screen w-full bg-cover bg-center sticky top-0" style="background-image: url('/astro.jpg')" >
 		<p class="w-3/4 lg:w-1/4 lg:ml-64 p-10 bg-slate-50 text-xl stickyparallax1">Well, the way they make shows is, they make one show. That show's called a pilot.</p>
 	</div>
 	`} lang="html">
@@ -912,61 +906,6 @@ import lomo from "../assets/images/lomo.jpeg";
 	</Code>
 	</section>
 
-	<!-- Video scrubber -->
-	<section class="sticky pt-1" id="videoscrubber">
-	<h2 class="text-6xl font-extrabold font-black">Video scrubber</h2>
-	<p>Video scrubbing går ud på at afspille en video alt efter hvor meget man er scrollet ned i et container-element. Det kombineres typisk med "position sticky." Videoen skal helst være meget kompakt, ellers bliver det noget tungt for browseren at arbejde med. Og scroll-scrubbingen bliver heller ikke helt smooth i Firefox. Se eksemplet nedenfor:</p>
-	<div class="">
-		<div class="videocontainer sticky top-[20%] w-full h-full">
-			<video  muted loop playsinline class="w-full" id="videofil" >
-				<source src="/lumix1025.mp4" type="video/mp4">
-				<source src="/lumix1025.webm" type="video/webm">
-			</video>
-		</div>
-		<div class="h-screen videoscroller"></div>
-	</div>
-	<h3>Scroll-scrubbing - teknikken bag</h3>
-	<p>I html'en: Først og fremmest er der en "videocontainer", som er "sticky." Videocontaineren indeholder en videofil (html5 video). Efter video-div'en, er der en tom div, der fylder én skærmhøjde (h-screen). Den bruges til at justere scroll-længden for scroll-scrubberen. Det giver følgende html:</p>
-	<Code code={`
-	<div class="videocontainer sticky top-[20%] w-full h-full">
-	<video  muted loop playsinline class="w-full" id="videofil" >
-		<source src="/lumix1025.mp4" type="video/mp4">
-		<source src="/lumix1025.webm" type="video/webm">
-	</video>
-	</div>
-	<div class="h-screen videoscroller"></div>
-	`} lang="html">
-	</Code>
-	<p>Dernæst er der lidt js til at håndtere scroll-scrubbingen:</p>
-	<Code code={`
-	/* Scroll scrubber */
-	const scrubbervideo = document.querySelector("#videofil");
-	scrubbervideo.pause();	
-	scroll(
-		({ y }) => {
-		if (!scrubbervideo.readyState) return;
-		scrubbervideo.currentTime = scrubbervideo.duration * y.progress;
-		},
-		{
-		target: document.querySelector(".videoscroller"),
-		offset: ["start end", "end start"]
-		}
-	);
-	`} lang="js">
-	</Code>
-	<ul>
-		<li>Først oprettes en const med en reference til videofilen</li>
-		<li>Dernæst sættes afspilningen af videoen på pause (i html'en er den sat til at autplaye)</li>
-		<li>Motion Ones scroll(funktion) anvendes til: 
-			<ul>
-				<li>At checke hvor langt der er scrollet i target, og kører videoen frem/tilbage til en tilsvarende position i videoen.</li>
-				<li>target: siger hvilket element, der skal lyttes efter, om der bliver scrollet i</li>
-				<li>offset: er en beskrivelse af hvornår videoscrubberen skal starte og slutte. "start end" betyder at scrubberen skal starte "når starten af target elementet rammer bunden/slutnignen af containeren (skærmen)" og "end start" betyder at animationen skal væres slut, når bunden/slutningen af target elementet rammer toppen/starten af containeren (skærmen).</li>
-			</ul>
-		</li>
-	</ul>
-	</section>
-
 	<!-- Progress bar -->
 	<section id="progressbar" class="pt-1">
 	<h2 class="text-6xl font-extrabold font-black">Progress-bar</h2>
@@ -1009,16 +948,16 @@ import lomo from "../assets/images/lomo.jpeg";
 	/* Entrance animation */
 	animate( "body", { opacity: [ 0, 1] }, { duration: 1 });
 
+	/* Mere animate() */
+	animate(".mereanimate", 
+	{ opacity: [ 0.4, 1, 0, 0.8], scale: [0.95, 1, 0.7, 0.9], rotate: [0, 180, 270, 360], x: [0, 50, 0, -50 ], y:[0, 50, 0, -50 ]}, 
+	{ delay: 2, duration: 4, repeatType: "reverse", repeat: Infinity }
+	)
+
 	/* inView animation */
 	inView( ".fotoinview" , () =>{
 	animate( ".fotoinview", { x: [-2000, 0 ] }, { duration: 3 })
 	})
-
-	/* Mere animate() */
-	animate(".mereanimate", 
-	{ opacity: [ 0.4, 1, 0, 0.8], scale: [0.95, 1, 0.7, 0.9], rotate: [0, 180, 270, 360], x: [0, 50, 0, -50 ], y:[0, 50, 0, -50 ]}, 
-	{ delay: 2, duration: 4, direction: "alternate", repeat: Infinity }
-	)
 
 	/* Stagger animation */
 	inView( "#stagger" , () =>{
@@ -1026,16 +965,16 @@ import lomo from "../assets/images/lomo.jpeg";
 		".staggeranimation li",
 		{ opacity: [0, 1] },
 		{ 
-			delay: stagger(1, { start: 2 })
+			delay: stagger(1, { startDelay: 2 })
 		}
 		)
 	})
 
 	/* Stagger på fotosektion  */
-	inView( ".fotosektioninview" , ({ target }) =>{
-	animate( target.querySelectorAll("img") , 
+	inView( ".fotosektioninview" , () =>{
+	animate( ".fotosektioninview img" , 
 		{ opacity: [0, 1] }, 
-		{ duration: 2, delay: stagger(1, { start: 2 }) }
+		{ duration: 2, delay: stagger(1, { startDelay: 2 }) }
 		)
 	})
 
@@ -1048,19 +987,19 @@ import lomo from "../assets/images/lomo.jpeg";
 		[".timelineanimation", { transform: "scale(1)" }, { duration: 1 }],
 		[".timelineanimation", { opacity: 0.3 }, { duration: 5 }],
 		]
-		timeline( timelineanimation );
+		animate( timelineanimation, { duration: 10, repeat: 2 } );
 	})
 
 	/* inView & return */
-	inView( ".inviewreturn", ({ target }) => {
+	inView( ".inviewreturn", (element) => {
   	animate(
-      target,
+      element,
       { rotate: [180, 0] },
       { delay: 1, duration: 2 },
   	) 
     return () => {
       animate(
-        target,
+       element,
         { rotate: 180 }
       )
   	}
@@ -1157,20 +1096,6 @@ import lomo from "../assets/images/lomo.jpeg";
 		animate( ".mangeelementer10", { x: [2000, 0 ] , y: [50, 0 ] }, { duration: 2 })
     	}
   	})
-
-	/* Scroll scrubber */
-	const scrubbervideo = document.querySelector("#videofil");
-	scrubbervideo.pause();	
-	scroll(
-		({ y }) => {
-		if (!scrubbervideo.readyState) return;
-		scrubbervideo.currentTime = scrubbervideo.duration * y.progress;
-		},
-		{
-		target: document.querySelector(".videoscroller"),
-		offset: ["start end", "end start"]
-		}
-	);
 
 	/* Progress-baren/læseindikatoren */
 	scroll( animate(".progress-bar", { scaleX: [0, 1] }));
