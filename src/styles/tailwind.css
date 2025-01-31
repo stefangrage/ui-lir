@@ -3,6 +3,18 @@
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/forms';
 
+@theme {
+    /*Infinite scroll animation*/
+    --animate-infinite-scroll: infinite-scroll 25s linear infinite;  
+
+    @keyframes infinite-scroll {    
+      from { transform: translateX(0);}    
+      to { transform: translateX(-100%);}  
+    }
+
+    /*custom cursor*/
+    --handcursor: url(/cursor.svg) 25 25, pointer;
+}
 
 @layer base {
   *,
@@ -15,10 +27,22 @@
 }
 
 @layer base{
-
+  /* a, button{
+      @apply cursor-handcursor;
+  } */
+  .fullwidthsection {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    }
+    ul li{
+      list-style-type: square;
+    }
 }
 @layer components{
-
 }
 @layer utilities{
   
